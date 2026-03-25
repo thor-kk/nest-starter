@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm run build
 
 # 生产阶段
-FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS builder
+FROM registry.cn-hangzhou.aliyuncs.com/library/node:20-alpine AS production
 
 # 安装 pnpm（可选，如果仅运行应用可不装，但推荐保留便于调试）
 RUN npm install -g pnpm
