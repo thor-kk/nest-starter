@@ -1,21 +1,27 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { EmailService } from 'src/core/email.service';
+import { RedisService } from 'src/core/redis.service';
 import { UserService } from './user.service';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { EmailService } from 'src/core/email.service';
-import { RedisService } from 'src/core/redis.service';
 
+@ApiTags('用户模块')
 @Controller('users')
 export class UserController {
-  @Inject(EmailService)
-  private emailService: EmailService;
+  @Inject()
+  private readonly emailService: EmailService;
 
-  @Inject(RedisService)
-  private redisService: RedisService;
+  @Inject()
+  private readonly redisService: RedisService;
 
-  constructor(private readonly userService: UserService) {}
+  @Inject()
+  private readonly userService: UserService;
 
+  @ApiOperation({ summary: '注册验证码' })
   @Get('register-captcha')
   async captcha(@Query('address') address: string) {
     const code = Math.random().toString().slice(2, 8);
@@ -30,6 +36,7 @@ export class UserController {
     return '发送成功';
   }
 
+  @ApiOperation({ summary: '注册' })
   @Post('register')
   register(@Body() registerUserDto: RegisterUserDto) {
     return this.userService.register(registerUserDto);
@@ -40,6 +47,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @ApiOperation({ summary: '获取所有用户' })
   @Get()
   findAll() {
     return this.userService.findAll();

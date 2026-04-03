@@ -12,10 +12,10 @@ import { RegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
 export class UserService {
-  @Inject(RedisService)
+  @Inject()
   private readonly redisService: RedisService;
 
-  @Inject(BcryptService)
+  @Inject()
   private readonly bcryptService: BcryptService;
 
   @InjectRepository(User)
