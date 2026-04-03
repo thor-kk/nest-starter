@@ -5,9 +5,9 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  process.env.TZ = configService.get('system_timezone');
-  await app.listen(configService.get('system_port') ?? 3000);
 
-  console.log(new Date().toString());
+  process.env.TZ = configService.get('system_timezone');
+
+  await app.listen(configService.get('system_port') ?? 3000);
 }
 bootstrap();

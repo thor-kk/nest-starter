@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
-import { md5 } from 'src/utils/md5';
-import { RedisService } from 'src/redis/redis.service';
+import { RedisService } from 'src/core/redis.service';
+import { BcryptService } from 'src/core/bcrypt.service';
+
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,10 +12,11 @@ import { RegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
 export class UserService {
-  private logger = new Logger();
-
   @Inject(RedisService)
   private readonly redisService: RedisService;
+
+  @Inject(BcryptService)
+  private readonly bcryptService: BcryptService;
 
   @InjectRepository(User)
   private readonly userRepository: Repository<User>;
@@ -41,14 +43,13 @@ export class UserService {
 
     const user = new User();
     user.username = registerUserDto.username;
-    user.password = md5(registerUserDto.password);
+    user.password = await this.bcryptService.hash(registerUserDto.password);
     user.email = registerUserDto.email;
 
     try {
       await this.userRepository.save(user);
       return '注册成功';
     } catch (e) {
-      this.logger.error(e, UserService);
       return '注册失败';
     }
   }

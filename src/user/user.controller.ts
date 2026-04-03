@@ -3,8 +3,8 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { EmailService } from 'src/email/email.service';
-import { RedisService } from 'src/redis/redis.service';
+import { EmailService } from 'src/core/email.service';
+import { RedisService } from 'src/core/redis.service';
 
 @Controller('users')
 export class UserController {
